@@ -1,15 +1,14 @@
 package com.huytcm.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
 public class User {
     private String username;
     private String password;
+    private List<Post> posts;
 
     public User() {
     }
@@ -36,5 +35,18 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public boolean checkLogin(String username, String password) {
+        return username.equals(this.username) && password.equals(this.password);
     }
 }

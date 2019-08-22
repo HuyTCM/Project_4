@@ -1,42 +1,47 @@
 package com.huytcm.dao;
 
-import com.huytcm.entities.User;
+import com.huytcm.entities.Post;
 import com.huytcm.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.NoResultException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UserDao {
+
+public class PostDao {
     private final SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
 
-    public User getUserByUsername(String username) {
+    public List<Post> getPostAtPage(int page) {
         Session session = sessionFactory.openSession();
-        User user;
+        List<Post> posts = new ArrayList<>();
+
         try {
-            String sql = "select user from " + User.class.getName() + " user where user.username = :username";
-            Query<User> query = session.createQuery(sql);
-            query.setParameter("username", username);
-            user = query.getSingleResult();
-        } catch (NoResultException e) {
-            System.out.println("user not found");
-            user = null;
+            String sql = "select p from " + Post.class.getName() + " p";
+            Query<Post> query = session.createQuery(sql);
+            query.setFirstResult((page - 1) * 5);
+            query.setMaxResults(5);
+
+            posts = query.getResultList();
+        } catch (Exception e) {
+            System.out.println("Can not get any posts!");
         } finally {
             session.close();
         }
-        return user;
+
+        return posts;
     }
 
-    public boolean save(User user) {
+    public boolean save(Post post) {
         boolean isSuccess = true;
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.getTransaction();
         try {
             transaction.begin();
-            session.save(user);
+            session.save(post);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -48,7 +53,7 @@ public class UserDao {
         return isSuccess;
     }
 
-    public boolean update(User user) {
+    public boolean update(Post post) {
         boolean isSuccess = true;
 
         Session session = sessionFactory.openSession();
@@ -56,7 +61,7 @@ public class UserDao {
 
         try {
             transaction.begin();
-            session.update(user);
+            session.update(post);
             transaction.commit();
         } catch (Exception  e) {
             transaction.rollback();
@@ -68,14 +73,14 @@ public class UserDao {
         return  isSuccess;
     }
 
-    public boolean delete(User user) {
+    public boolean delete(Post post) {
         boolean isSuccess = true;
 
         Session session = sessionFactory.openSession();
         Transaction transaction = session.getTransaction();
         try {
             transaction.begin();
-            session.delete(user);
+            session.delete(post);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();

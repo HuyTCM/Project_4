@@ -11,17 +11,21 @@ import java.util.Date;
 public class Post {
     private Long id;
     private String title;
+    private PostDetail postDetail;
+    private User author;
     private Date createDate;
     private Date updateDate;
 
     public Post() {
     }
 
-    public Post(Long id, String title, Date createDate, Date updateDate) {
+    public Post(Long id, String title, Date createDate, Date updateDate, User user, PostDetail postDetail) {
         this.id = id;
         this.title = title;
         this.createDate = createDate;
         this.updateDate = updateDate;
+        this.author = user;
+        this.postDetail = postDetail;
     }
 
     @Id
@@ -42,6 +46,25 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @OneToOne(mappedBy = "post")
+    public PostDetail getPostDetail() {
+        return postDetail;
+    }
+
+    public void setPostDetail(PostDetail postDetail) {
+        this.postDetail = postDetail;
+    }
+
+    @JoinColumn(name = "author", referencedColumnName = "username", nullable = false)
+    @ManyToOne(optional = false)
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     @Column(name = "create_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

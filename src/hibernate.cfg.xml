@@ -19,6 +19,7 @@
         <property name="show_sql">true</property>
 
         <mapping class="com.huytcm.entities.Post"/>
+        <mapping class="com.huytcm.entities.PostDetail"/>
         <mapping class="com.huytcm.entities.User"/>
     </session-factory>
 </hibernate-configuration>
