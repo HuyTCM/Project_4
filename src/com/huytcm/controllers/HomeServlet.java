@@ -13,17 +13,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "HomeServlet")
+@WebServlet(name = "HomeServlet", urlPatterns = "/home")
 public class HomeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pageText = request.getParameter("txtPage");
-        int page = Integer.parseInt(pageText);
+        int page = 1;
+        if (pageText != null) {
+            page = Integer.parseInt(pageText);
+        }
         PostDao postDao = new PostDao();
         List<Post> posts = postDao.getPostAtPage(page);
         request.setAttribute("POSTS", posts);
-        response.sendRedirect("index.jsp");
+        System.out.println("welcome homepage!");
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }

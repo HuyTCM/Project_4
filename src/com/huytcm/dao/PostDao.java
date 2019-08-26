@@ -1,6 +1,7 @@
 package com.huytcm.dao;
 
 import com.huytcm.entities.Post;
+import com.huytcm.entities.PostDetail;
 import com.huytcm.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,7 @@ import java.util.List;
 
 
 public class PostDao {
+    private final static int MAX_SHORT_CONTENT_LENGTH = 200;
     private final SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
 
     public List<Post> getPostAtPage(int page) {
@@ -19,7 +21,7 @@ public class PostDao {
         List<Post> posts = new ArrayList<>();
 
         try {
-            String sql = "select p from " + Post.class.getName() + " p";
+            String sql = "select p from " + Post.class.getName() + " p order by p.createDate desc";
             Query<Post> query = session.createQuery(sql);
             query.setFirstResult((page - 1) * 5);
             query.setMaxResults(5);
@@ -32,6 +34,49 @@ public class PostDao {
         }
 
         return posts;
+    }
+
+    public boolean saveNewPost(String title, String content) {
+        //TODO: set user
+        boolean isSuccess = true;
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
+            Post post = new Post();
+            post.setTitle(title);
+            post.setShortContent(getShortContent(content));
+            session.flush();
+
+            PostDetail postDetail = new PostDetail();
+            postDetail.setContent(content);
+
+            post.setPostDetail(postDetail);
+            postDetail.setPost(post);
+
+            session.save(post);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+            isSuccess = false;
+        } finally {
+            session.close();
+        }
+        return isSuccess;
+    }
+
+    private String getShortContent(String content) {
+        String shortContent = "";
+        if (content != null) {
+            // get the first 200 words in main content
+            if (content.length() > MAX_SHORT_CONTENT_LENGTH) {
+                shortContent = content.substring(0, MAX_SHORT_CONTENT_LENGTH);
+            } else {
+                shortContent = content;
+            }
+        }
+        return shortContent.replaceAll("\\<[^>]*>","").replaceAll("&nbsp;", " ");
     }
 
     public boolean save(Post post) {

@@ -29,7 +29,7 @@ public class PostDetail {
         this.id = id;
     }
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     public Post getPost() {
         return post;

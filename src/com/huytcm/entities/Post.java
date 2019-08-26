@@ -11,6 +11,7 @@ import java.util.Date;
 public class Post {
     private Long id;
     private String title;
+    private String shortContent;
     private PostDetail postDetail;
     private User author;
     private Date createDate;
@@ -19,11 +20,10 @@ public class Post {
     public Post() {
     }
 
-    public Post(Long id, String title, Date createDate, Date updateDate, User user, PostDetail postDetail) {
+    public Post(Long id, String title, String shortContent, User user, PostDetail postDetail) {
         this.id = id;
         this.title = title;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
+        this.shortContent = shortContent;
         this.author = user;
         this.postDetail = postDetail;
     }
@@ -48,7 +48,17 @@ public class Post {
         this.title = title;
     }
 
-    @OneToOne(mappedBy = "post")
+    @Column(name = "short_content")
+    public String getShortContent() {
+        return shortContent;
+    }
+
+    public void setShortContent(String shortContent) {
+        this.shortContent = shortContent;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL, mappedBy = "post")
     public PostDetail getPostDetail() {
         return postDetail;
     }
@@ -57,8 +67,8 @@ public class Post {
         this.postDetail = postDetail;
     }
 
-    @JoinColumn(name = "author", referencedColumnName = "username", nullable = false)
-    @ManyToOne(optional = false)
+    @JoinColumn(name = "author", referencedColumnName = "username")
+    @ManyToOne
     public User getAuthor() {
         return author;
     }
