@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: HuyTCM
-  Date: 8/25/19
-  Time: 16:40
+  Date: 9/2/19
+  Time: 13:48
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -25,6 +25,14 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="bower_components/morris.js/morris.css">
+    <!-- jvectormap -->
+    <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
@@ -42,44 +50,42 @@
 <div class="wrapper">
     <%@ include file="parts/main-header.jsp" %>
     <%@ include file="parts/main-sidebar.jsp" %>
-
+    <c:set var="post" value="${POST}"/>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                User Profile
-            </h1>
+            <%--<h1>--%>
+                <%--Read Mail--%>
+            <%--</h1>--%>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Examples</a></li>
-                <li class="active">User profile</li>
+                <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
             </ol>
         </section>
-
         <!-- Main content -->
         <section class="content">
-
             <div class="row">
-                <div class="col-md-12">
-                    <form method="post" action="editor">
-                    <div class="box">
-                        <div class="box-header">
-                            <input type="text" name="txtTitle" class="form-control" placeholder="Post title ...">
+                <div class="col-md-9">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h2 class="box-title"><c:out value="${post.title}"/></h2>
+                            <h5>From: <c:out value="${post.author}"/>
+                                <span class="mailbox-read-time pull-right"><c:out value="${post.updateDate}"/></span></h5>
                         </div>
                         <!-- /.box-header -->
-                        <div class="box-body pad">
-
-                      <textarea name="content" class="textarea" placeholder="Place some text here"
-                                style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
-                                <button type="submit" class="btn btn-block btn-primary">Publish</button>
+                        <div class="box-body no-padding">
+                            <div class="mailbox-read-message">
+                                <c:out value="${post.postDetail.content}" escapeXml="false"/>
+                            </div>
+                            <!-- /.mailbox-read-message -->
                         </div>
+                        <!-- /.box-body -->
                     </div>
-                    </form>
+                    <!-- /. box -->
                 </div>
-                <!-- /.col-->
+                <!-- /.col -->
             </div>
-            <!-- ./row -->
+            <!-- /.row -->
         </section>
         <!-- /.content -->
     </div>
@@ -91,17 +97,16 @@
 
 <!-- jQuery 3 -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
 <!-- Bootstrap 3.3.7 -->
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- Bootstrap WYSIHTML5 -->
-<script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-<script>
-    $(function () {
-        //bootstrap WYSIHTML5 - text editor
-        $('.textarea').wysihtml5()
-    })
-</script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
 </body>
 </html>
+

@@ -27,7 +27,10 @@ public class HomeServlet extends HttpServlet {
         PostDao postDao = new PostDao();
         List<Post> posts = postDao.getPostAtPage(page);
         request.setAttribute("POSTS", posts);
-        System.out.println("welcome homepage!");
+        Long numOfPosts = postDao.getNumOfPosts();
+        System.out.println("num of post" + numOfPosts);
+        request.setAttribute("NUM_POST", numOfPosts);
+        request.setAttribute("CURR_PAGE", page);
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }

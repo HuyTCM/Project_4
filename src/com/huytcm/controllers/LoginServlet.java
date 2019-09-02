@@ -23,16 +23,16 @@ public class LoginServlet extends HttpServlet {
             // authenticated user
             HttpSession session = request.getSession();
             session.setAttribute("USER", user);
-            response.sendRedirect("HomeServlet");
+            response.sendRedirect("home");
         } else {
             // not-authenticated user
             request.setAttribute("MSG", "Login failed!");
-            response.sendRedirect("login.jsp");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        response.sendRedirect("login.jsp");
     }
 }

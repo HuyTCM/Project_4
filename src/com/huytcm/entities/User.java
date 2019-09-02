@@ -49,4 +49,9 @@ public class User {
     public boolean checkLogin(String username, String password) {
         return username.equals(this.username) && password.equals(this.password);
     }
+
+    @Override
+    public String toString() {
+        return this.username;
+    }
 }

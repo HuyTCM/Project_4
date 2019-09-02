@@ -2,6 +2,7 @@ package com.huytcm.dao;
 
 import com.huytcm.entities.Post;
 import com.huytcm.entities.PostDetail;
+import com.huytcm.entities.User;
 import com.huytcm.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +16,23 @@ import java.util.List;
 public class PostDao {
     private final static int MAX_SHORT_CONTENT_LENGTH = 200;
     private final SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+
+    public Post getPostById(Long id) {
+        Session session = sessionFactory.openSession();
+        Post post;
+        try {
+            String sql = "select p from " + Post.class.getName() + " p where p.id = :postId";
+            Query<Post> query = session.createQuery(sql);
+            query.setParameter("postId", id);
+            post = query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            post = null;
+        } finally {
+            session.close();
+        }
+        return post;
+    }
 
     public List<Post> getPostAtPage(int page) {
         Session session = sessionFactory.openSession();
@@ -36,7 +54,25 @@ public class PostDao {
         return posts;
     }
 
-    public boolean saveNewPost(String title, String content) {
+    public Long getNumOfPosts() {
+        Session session = sessionFactory.openSession();
+        Long numOfPost;
+        try {
+            String sql = "select count(1) from " + Post.class.getName();
+            System.out.println(sql);
+            Query query = session.createQuery(sql);
+            numOfPost = (Long)query.uniqueResult();
+            System.out.println(numOfPost);
+        } catch (Exception e) {
+            numOfPost = Long.parseLong("0");
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return numOfPost;
+    }
+
+    public boolean saveNewPost(String title, String content, User author) {
         //TODO: set user
         boolean isSuccess = true;
         Session session = sessionFactory.openSession();
@@ -45,7 +81,10 @@ public class PostDao {
             transaction.begin();
             Post post = new Post();
             post.setTitle(title);
-            post.setShortContent(getShortContent(content));
+            String shortContent = getShortContent(content);
+            System.out.println(shortContent);
+            post.setShortContent(shortContent);
+            post.setAuthor(author);
             session.flush();
 
             PostDetail postDetail = new PostDetail();

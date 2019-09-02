@@ -23,6 +23,7 @@ public class PostDetailDao {
             query.setParameter("postId", postId);
             postDetail = query.getSingleResult();
         } catch (Exception e) {
+            e.printStackTrace();
             postDetail = null;
         } finally {
             session.close();
